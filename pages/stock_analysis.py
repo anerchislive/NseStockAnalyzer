@@ -85,16 +85,25 @@ def stock_analysis_page():
                 st.error(error)
                 return
 
+            # Calculate price change
+            current_price = df['Close'].iloc[-1]
+            prev_price = df['Close'].iloc[-2]
+            price_change = ((current_price / prev_price) - 1) * 100
+            price_change_color = "green" if price_change >= 0 else "red"
+
             # Get company info
             info = get_company_info(selected_symbol)
 
-            # Display company info
+            # Display company info with current price and change
             st.subheader(info['name'])
-            cols = st.columns(4)
+            cols = st.columns(6)
             cols[0].metric("Sector", info['sector'])
             cols[1].metric("Industry", info['industry'])
             cols[2].metric("Market Cap", format_number(info['market_cap']))
             cols[3].metric("Volume", format_number(info['volume']))
+            cols[4].metric("Current Price", f"₹{current_price:.2f}")
+            cols[5].metric("Day Change", f"{price_change:+.2f}%", 
+                         delta_color="normal" if price_change >= 0 else "inverse")
 
             # Calculate indicators and signals
             df = add_indicators(df)
