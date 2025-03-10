@@ -7,6 +7,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Custom CSS to reduce sidebar width and improve layout
+st.markdown("""
+<style>
+    [data-testid="stSidebar"][aria-expanded="true"] {
+        min-width: 200px;
+        max-width: 200px;
+    }
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        min-width: 200px;
+        margin-left: -200px;
+    }
+    .css-1d391kg {
+        padding-top: 1rem;
+    }
+    .stApp > header {
+        background-color: transparent;
+    }
+    .news-table {
+        font-size: 14px;
+        width: 100%;
+    }
+    .news-table td {
+        padding: 8px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 def main():
     st.title("NSE Stock Analysis Platform")
 
