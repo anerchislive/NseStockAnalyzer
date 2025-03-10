@@ -9,7 +9,8 @@ from utils.signals import generate_signals, get_signal_summary
 
 def plot_stock_data(df, signals):
     """Create interactive stock charts with indicators."""
-    fig = make_subplots(rows=3, cols=1, shared_xaxis=True, 
+    fig = make_subplots(rows=3, cols=1, 
+                        shared_xaxes=True,
                         vertical_spacing=0.05,
                         row_heights=[0.6, 0.2, 0.2])
 
@@ -38,11 +39,25 @@ def plot_stock_data(df, signals):
     fig.add_hline(y=70, line_dash="dash", line_color="red", row=3, col=1)
     fig.add_hline(y=30, line_dash="dash", line_color="green", row=3, col=1)
 
+    # Update layout
     fig.update_layout(
         height=800,
         xaxis_rangeslider_visible=False,
-        template='plotly_white'
+        template='plotly_white',
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
     )
+
+    # Update y-axis titles
+    fig.update_yaxes(title_text="Price", row=1, col=1)
+    fig.update_yaxes(title_text="MACD", row=2, col=1)
+    fig.update_yaxes(title_text="RSI", row=3, col=1)
 
     return fig
 
