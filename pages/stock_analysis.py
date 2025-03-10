@@ -48,26 +48,31 @@ def plot_stock_data(df, signals):
 
 def stock_analysis_page():
     st.title("Stock Technical Analysis")
-    
+
     # Load symbols from CSV
-    symbols = pd.read_csv("attached_assets/symbol.csv", header=0)
-    selected_symbol = st.selectbox("Select Stock", symbols['SYMBOL'].dropna())
-    
+    try:
+        # Read CSV file with no header, then assign column name
+        symbols = pd.read_csv("attached_assets/symbol.csv", names=['Symbol'], skiprows=1)
+        selected_symbol = st.selectbox("Select Stock", symbols['Symbol'].dropna())
+    except Exception as e:
+        st.error(f"Error loading symbols: {str(e)}")
+        return
+
     col1, col2, col3 = st.columns(3)
     timeframe = col1.selectbox("Timeframe", ['1mo', '3mo', '6mo', '1y', '2y', '5y'])
     interval = col2.selectbox("Interval", ['1d', '5d', '1wk', '1mo'])
-    
+
     if col3.button("Analyze"):
         with st.spinner("Fetching data..."):
             df, error = get_stock_data(selected_symbol, timeframe, interval)
-            
+
             if error:
                 st.error(error)
                 return
-                
+
             # Get company info
             info = get_company_info(selected_symbol)
-            
+
             # Display company info
             st.subheader(info['name'])
             cols = st.columns(4)
@@ -75,18 +80,18 @@ def stock_analysis_page():
             cols[1].metric("Industry", info['industry'])
             cols[2].metric("Market Cap", format_number(info['market_cap']))
             cols[3].metric("Volume", format_number(info['volume']))
-            
+
             # Calculate indicators and signals
             df = add_indicators(df)
             signals = generate_signals(df)
-            
+
             # Plot charts
             st.plotly_chart(plot_stock_data(df, signals), use_container_width=True)
-            
+
             # Display signals
             st.subheader("Trading Signals")
             signal_summary = get_signal_summary(signals)
-            
+
             signal_cols = st.columns(5)
             for i, (indicator, signal) in enumerate(signal_summary.items()):
                 color = "green" if signal in ['Buy', 'Bullish', 'Oversold'] else "red" if signal in ['Sell', 'Bearish', 'Overbought'] else "gray"
