@@ -581,6 +581,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "plotly" },
+    { name = "pytz" },
     { name = "streamlit" },
     { name = "yfinance" },
 ]
@@ -591,6 +592,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.2.3" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "plotly", specifier = ">=6.0.0" },
+    { name = "pytz", specifier = ">=2025.1" },
     { name = "streamlit", specifier = ">=1.43.1" },
     { name = "yfinance", specifier = ">=0.2.54" },
 ]
