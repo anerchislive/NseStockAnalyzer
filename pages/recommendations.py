@@ -58,20 +58,21 @@ def recommendations_page():
                 display_df['price_change'] = display_df['price_change'].round(2).astype(str) + '%'
                 display_df['technical_score'] = display_df['technical_score'].round(2)
 
-                # Add recommendation basis column
-                def get_recommendation_basis(row):
+                # Generate recommendation basis
+                basis_list = []
+                for _, row in display_df.iterrows():
                     signals = []
                     if row['technical_score'] > 50:
                         signals.append("Strong technical indicators")
-                    if row['signal_summary']['RSI'] == 'Oversold':
+                    if 'RSI' in row['signal_summary'] and row['signal_summary']['RSI'] == 'Oversold':
                         signals.append("Oversold (RSI)")
-                    if row['signal_summary']['MACD'] == 'Buy':
+                    if 'MACD' in row['signal_summary'] and row['signal_summary']['MACD'] == 'Buy':
                         signals.append("Bullish MACD crossover")
-                    if row['signal_summary']['Moving Average'] == 'Bullish':
+                    if 'Moving Average' in row['signal_summary'] and row['signal_summary']['Moving Average'] == 'Bullish':
                         signals.append("Above key moving averages")
-                    return ", ".join(signals) if signals else "Multiple factors"
+                    basis_list.append(", ".join(signals) if signals else "Multiple factors")
 
-                display_df['Basis'] = display_df.apply(get_recommendation_basis, axis=1)
+                display_df['Basis'] = basis_list
 
                 # Color-code recommendations
                 def color_recommendations(val):
